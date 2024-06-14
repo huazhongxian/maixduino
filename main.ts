@@ -64,25 +64,43 @@ namespace MaixDuino {
     Back = 2,
   }
 
-
+  function trim(n: string): string {
+    while (n.charCodeAt(n.length - 1) < 0x1f) {
+      n = n.slice(0, n.length - 1)
+    }
+    return n
+  }
 
   serial.onDataReceived('\n', function () {
-    basic.showNumber(8)
-    basic.pause(500)
+
     let a = serial.readUntil('\n')
+	basic.showNumber(8)
+    if (a.charAt(0) == 'K') {
+      a = trim(a)
       basic.showString(a)
-    if (a.indexOf("[") != -1) {
-      basic.showNumber(7)
-    } else {
- 
-      basic.showNumber(9)
-      let diseasesValue = a;
-      if (btnEvt) {
-        btnEvt(diseasesValue) // btna btnb  
-      }
-      let cmd = 42;
-      control.raiseEvent(EventBusSource.MES_BROADCAST_GENERAL_ID, 0x8900 + cmd)
+    //   let b = a.slice(1, a.length).split(' ')
+    //   let cmd = parseInt(b[0])
+    //  if (cmd == 46) {a
+    //     if (btnEvt) {
+    //       btnEvt(a)
+    //     }
+    //   }
     }
+    // basic.showNumber(8)
+    // basic.pause(500)
+    //   basic.showString(a)
+    // if (a.indexOf("[") != -1) {
+    //   basic.showNumber(7)
+    // } else {
+ 
+    //   basic.showNumber(9)
+    //   let diseasesValue = a;
+    //   if (btnEvt) {
+    //     btnEvt(diseasesValue) // btna btnb  
+    //   }
+    //   let cmd = 42;
+    //   control.raiseEvent(EventBusSource.MES_BROADCAST_GENERAL_ID, 0x8900 + cmd)
+    // }
 
   })
 
@@ -160,6 +178,9 @@ namespace MaixDuino {
     //let a = '["KPU", "load", "diseases"]';
     let jsonStr = '["KPU", "detect"]';
     serial.writeLine(jsonStr);
+
+    let str = `K46`
+    serial.writeLine(`K46`)
     basic.pause(100)
   }
 
